@@ -96,9 +96,8 @@ class PDF(FPDF):
         self.cell(0,8,"while  do-while  for  switch  if-else  break  continue",align='C',new_x="LMARGIN",new_y="NEXT")
         self.set_text_color(0,0,0)
 
-    def insert_screenshot(self, filename, caption):
+    def insert_screenshot(self, filename, caption, img_w=85, img_h=55):
         filepath = os.path.join(PICS_DIR, filename)
-        img_w = 130; img_h = 82
         margin_x = (self.w - img_w) / 2
         if self.get_y() + img_h + 12 > self.h - 20:
             self.add_page()
@@ -457,14 +456,14 @@ def main():
     pdf.sec("4. 游戏运行截图")
 
     screenshots = [
-        ("标题画面.png",    "图1: 游戏标题画面与规则说明"),
-        ("游戏中.png",      "图2: 游戏中 — 状态栏与行动菜单"),
-        ("夜间事件.png",    "图3: 夜间随机事件"),
-        ("胜利结局.png",    "图4: 胜利结局 — 获救"),
-        ("游戏失败.png",    "图5: 失败结局 — 数值归零"),
+        ("标题画面.png",    "图1: 游戏标题画面与规则说明",     85, 55),
+        ("游戏中.png",      "图2: 游戏中 — 状态栏与行动菜单",  85, 55),
+        ("夜间事件.png",    "图3: 夜间随机事件",               85, 55),
+        ("胜利结局.png",    "图4: 胜利结局 — 获救",           130, 82),
+        ("游戏失败.png",    "图5: 失败结局 — 数值归零",       85, 55),
     ]
-    for filename, caption in screenshots:
-        pdf.insert_screenshot(filename, caption)
+    for filename, caption, w, h in screenshots:
+        pdf.insert_screenshot(filename, caption, w, h)
 
     # ================================================================
     # 第 5 章：实验总结
