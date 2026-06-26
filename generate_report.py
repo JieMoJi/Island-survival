@@ -96,21 +96,27 @@ class PDF(FPDF):
         self.cell(0,8,"while  do-while  for  switch  if-else  break  continue",align='C',new_x="LMARGIN",new_y="NEXT")
         self.set_text_color(0,0,0)
 
-    def insert_screenshot(self, filename, caption, img_w=85, img_h=55):
+    def insert_screenshot(self, filename, caption, img_w=160):
         filepath = os.path.join(PICS_DIR, filename)
-        margin_x = (self.w - img_w) / 2
-        if self.get_y() + img_h + 12 > self.h - 20:
-            self.add_page()
-        if os.path.exists(filepath):
-            self.image(filepath, x=margin_x, w=img_w, h=img_h)
-            self.ln(2)
-            self.set_font(self.fn, '', 9)
-            self.set_text_color(100, 100, 100)
-            self.cell(0, 5, caption, align='C', new_x="LMARGIN", new_y="NEXT")
-            self.set_text_color(0, 0, 0)
-            self.ln(4)
-        else:
+        if not os.path.exists(filepath):
             self.body(f"(未找到截图: {filename})")
+            return
+        # 读取原图尺寸，计算等比缩放后的高度
+        from PIL import Image
+        with Image.open(filepath) as img:
+            px_w, px_h = img.size
+        img_h = img_w * px_h / px_w
+        # 如果放不下就换页
+        if self.get_y() + img_h + 15 > self.h - 20:
+            self.add_page()
+        margin_x = (self.w - img_w) / 2
+        self.image(filepath, x=margin_x, w=img_w, h=img_h)
+        self.ln(2)
+        self.set_font(self.fn, '', 9)
+        self.set_text_color(100, 100, 100)
+        self.cell(0, 5, caption, align='C', new_x="LMARGIN", new_y="NEXT")
+        self.set_text_color(0, 0, 0)
+        self.ln(4)
 
 
 # ============================================================
@@ -455,15 +461,16 @@ def main():
     pdf.add_page()
     pdf.sec("4. 游戏运行截图")
 
+    # 只设宽度，高度等比自动缩放，保证清晰不拉伸
     screenshots = [
-        ("标题画面.png",    "图1: 游戏标题画面与规则说明",     85, 55),
-        ("游戏中.png",      "图2: 游戏中 — 状态栏与行动菜单",  85, 55),
-        ("夜间事件.png",    "图3: 夜间随机事件",               85, 55),
-        ("胜利结局.png",    "图4: 胜利结局 — 获救",           130, 82),
-        ("游戏失败.png",    "图5: 失败结局 — 数值归零",       85, 55),
+        ("标题画面.png",    "图1: 游戏标题画面与规则说明",     160),
+        ("游戏中.png",      "图2: 游戏中 — 状态栏与行动菜单",  160),
+        ("夜间事件.png",    "图3: 夜间随机事件",               160),
+        ("胜利结局.png",    "图4: 胜利结局 — 获救",           100),
+        ("游戏失败.png",    "图5: 失败结局 — 数值归零",       160),
     ]
-    for filename, caption, w, h in screenshots:
-        pdf.insert_screenshot(filename, caption, w, h)
+    for item in screenshots:
+        pdf.insert_screenshot(item[0], item[1], item[2])
 
     # ================================================================
     # 第 5 章：实验总结
