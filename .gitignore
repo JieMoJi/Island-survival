@@ -8,6 +8,9 @@
 .vscode/
 .idea/
 
+# 其他项目
+C++game1/
+
 # 系统文件
 Thumbs.db
 Desktop.ini
