@@ -1,0 +1,13 @@
+# 编译产物
+*.exe
+*.o
+*.out
+
+# IDE / 工具
+.claude/
+.vscode/
+.idea/
+
+# 系统文件
+Thumbs.db
+Desktop.ini
