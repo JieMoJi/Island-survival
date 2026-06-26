@@ -98,7 +98,7 @@ class PDF(FPDF):
 
     def insert_screenshot(self, filename, caption):
         filepath = os.path.join(PICS_DIR, filename)
-        img_w = 85; img_h = 55
+        img_w = 130; img_h = 82
         margin_x = (self.w - img_w) / 2
         if self.get_y() + img_h + 12 > self.h - 20:
             self.add_page()
